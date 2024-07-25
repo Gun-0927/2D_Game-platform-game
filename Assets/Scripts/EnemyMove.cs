@@ -7,6 +7,7 @@ public class EnemyMove : MonoBehaviour
     Rigidbody2D rigid;
     Animator animator;
     SpriteRenderer spriteRenderer;
+    CapsuleCollider2D CapsulCollider;
     public int nextMove;
     // Start is called before the first frame update
     void Awake()
@@ -14,8 +15,9 @@ public class EnemyMove : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        CapsulCollider = GetComponent<CapsuleCollider2D>();
 
-        Invoke("Think",5);
+        Invoke("Think",1);
 
     }
 
@@ -36,7 +38,7 @@ public class EnemyMove : MonoBehaviour
         }
     }
 
-    //Àç±ÍÇÔ¼ö
+    //ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½
     void Think()
     {
         //Set Next Active
@@ -49,7 +51,7 @@ public class EnemyMove : MonoBehaviour
         {
             spriteRenderer.flipX = nextMove == 1;
         }
-        //Àç±Í
+        //ï¿½ï¿½ï¿½
         float nextThinkTime = Random.Range(2f,6f);
         Invoke("Think", nextThinkTime);
     }
@@ -61,5 +63,23 @@ public class EnemyMove : MonoBehaviour
 
         CancelInvoke();
         Invoke("Think", 5);
+    }
+
+    public void OnDamaged()
+    {
+        //Sprit Alpha
+        spriteRenderer.color = new Color(1, 1, 1, 0.4f);
+        //Sprit Flip Y
+        spriteRenderer.flipY = true;
+        //Collider Disable
+        CapsulCollider.enabled = false;
+        //Die Effect Jump
+        rigid.AddForce(Vector2.up * 3, ForceMode2D.Impulse);
+        //Destroy
+        Invoke("DeActive", 5);
+    }
+    void DeActive()
+    {
+        gameObject.SetActive(false);
     }
 }
